@@ -1,2 +1,10 @@
+SVM.py
+--------
 http://scikit-learn.org/stable/auto_examples/applications/face_recognition.html
 http://scikit-image.org/docs/dev/auto_examples/features_detection/plot_gabor.html?highlight=gabor%20filter
+
+CNN.py
+-------
+We used the scikit-neuralnetwork library, which runs GPU-optimized Convolution Net using Theano. 
+We read the library's documentation, and fine-tuned each parameter on this page:
+http://scikit-neuralnetwork.readthedocs.org/en/latest/module_mlp.html

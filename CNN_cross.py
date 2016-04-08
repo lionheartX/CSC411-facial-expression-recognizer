@@ -30,8 +30,6 @@ def CNN(X, y):
 	print('\nTRAIN SCORE', nn.score(X_train, y_train))
 	print('TEST SCORE', nn.score(X_test, y_test))
 	#y_pred = nn.predict(X_test)
-	
-
 
 def batch_run():
 	pass
