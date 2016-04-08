@@ -4,18 +4,13 @@ TRAIN_TEST_SPLIT_RATIO = 0.2
 
 def loadData():
     data = sio.loadmat('./labeled_images.mat')
-    test = sio.loadmat('./public_test_images.mat')
     y_data = data['tr_labels'][:, 0];
     X_data = data['tr_images'].T;
-
-    X_test = test['public_test_images'].T;
     #print(test)
     #(a_test, b_test, n_images_test) = test["public_test_images"].shape
     del data
-    del test
     X_data = X_data.reshape((-1, 1024)).astype('float');
-    X_test = X_test.reshape((-1, 1024)).astype('float');
-    return X_data, y_data, X_test
+    return X_data, y_data
 
 # def equalize_hist(train_img):
 #     n_images, _ = train_img.shape
@@ -58,37 +53,15 @@ def compute_feature(image, kernels):
 '''
 
 
-def SVM(X_train, y_train, X_test):
+def SVM(X, y):
     print("SVM with PCA of rbf, writening all on, no normalize")
-    preprocessing.normalize(X_train, 'max')
-    preprocessing.normalize(X_test, 'max')
+    preprocessing.normalize(X, 'max')
     #preprocessing.robust_scale(X, axis=1, with_centering = True) #bad
-    X_train = equalize_hist(X_train)
-    X_test = equalize_hist(X_test)
-    '''X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=TRAIN_TEST_SPLIT_RATIO)'''
+    X = equalize_hist(X)
 
-    n_components = 147
+    X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=TRAIN_TEST_SPLIT_RATIO)
 
-    print("Extracting the top %d eigenfaces from %d faces"
-          % (n_components, X_train.shape[0]))
-    pca = RandomizedPCA(n_components=n_components, whiten=False).fit(X_train)
-
-    print("Projecting the input data on the eigenfaces orthonormal basis")
-    X_train_pca = pca.transform(X_train)
-    X_test_pca = pca.transform(X_test)
-    print("done ")
-
-    param_grid = {'C': [1e3, 5e3, 1e4, 5e4, 1e5],
-              'gamma': [0.0001, 0.0005, 0.001, 0.005, 0.01, 0.1], }
-    classifier13 = GridSearchCV(SVC(kernel='rbf', class_weight='balanced'), param_grid)
-    classifier13.fit(X_train_pca, y_train)
-    return list(classifier13.predict(X_test_pca))
-'''
-    print("====== PCA 200 ========")
-    print('TRAIN SCORE', classifier13.score(X_train_pca, y_train))
-    print('TEST SCORE', classifier13.score(X_test_pca, y_test))
-
-    n_components = 500
+    n_components = 120
 
     print("Extracting the top %d eigenfaces from %d faces"
           % (n_components, X_train.shape[0]))
@@ -106,7 +79,7 @@ def SVM(X_train, y_train, X_test):
     classifier13 = GridSearchCV(SVC(kernel='rbf', class_weight='balanced'), param_grid)
     classifier13.fit(X_train_pca, y_train)
 
-    print("====== PCA 500 ========")
+    print("====== PCA 120 ========")
     print('TRAIN SCORE', classifier13.score(X_train_pca, y_train))
     print('TEST SCORE', classifier13.score(X_test_pca, y_test))
 
@@ -200,7 +173,7 @@ def SVM(X_train, y_train, X_test):
     print("====== PCA 160 ========")
     print('TRAIN SCORE', classifier13.score(X_train_pca, y_train))
     print('TEST SCORE', classifier13.score(X_test_pca, y_test))
-'''
+
 
 
 def write_to_csv(result):
@@ -215,9 +188,9 @@ def write_to_csv(result):
             index+=1    
 
 def main():
-    X_train, y_train, X_test = loadData()
-    result = SVM(X_train, y_train, X_test)
-    write_to_csv(result)
+    X, y= loadData()
+    SVM(X, y)
+    #write_to_csv(result)
 
 if __name__ == '__main__':
     print "Import libaries..."

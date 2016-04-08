@@ -11,6 +11,7 @@ def loadData():
 	X = data['tr_images'].T
 	X = X.astype('float')
 	y = data['tr_labels'][:, 0]
+	del data
 	return X, y
 
 def CNN(X, y):
