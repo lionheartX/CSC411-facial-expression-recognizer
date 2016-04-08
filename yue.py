@@ -129,7 +129,7 @@ def main():
 	SVM(X, y)
 
 if __name__ == '__main__':
-	print "Import libaries..."
+	print "Code Running..."
 	import numpy as np
 	import scipy.io as sio
 	import matplotlib.pyplot as plt
@@ -144,6 +144,8 @@ if __name__ == '__main__':
 	from sklearn.grid_search import GridSearchCV
 	from sklearn.decomposition import RandomizedPCA
 	from sklearn.svm import SVC
+	# Use the maximum number of threads for this script.
+	from sknn.platform import cpu32, threading
 	logging.basicConfig()
 	print("-------------------------")
 	main()
