@@ -72,9 +72,8 @@ def compute_feature(image, kernels):
 
 def SVM(X, y):
     print("SVM with PCA of rbf, writening all on, no normalize")
-    #preprocessing.normalize(X) #not sure, but possibly bad
+    preprocessing.normalize(X) #not sure, but possibly bad
     #preprocessing.robust_scale(X, axis=1, with_centering = True) #bad
-
     X = equalize_hist(X)
 
     X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=TRAIN_TEST_SPLIT_RATIO)
