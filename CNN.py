@@ -22,6 +22,8 @@ def loadData():
 	#scale centre to the mean to unit vector
 	#preprocessing.scale(X_train, =1)
 	#preprocessing.scale(X_test)
+	del train
+	del test
 	return X_train, y_train, X_test
 
 def CNN(X_train, y_train, X_test):

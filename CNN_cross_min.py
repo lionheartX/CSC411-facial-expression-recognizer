@@ -9,24 +9,34 @@ LAYERS = ["Softmax", ]
 def loadData():
 	data = sio.loadmat('./labeled_images.mat')
 	X = data['tr_images'].T
-	X = X.astype('float')
+	X = X.reshape((-1, 1024)).astype('float')
+	X *= (1.0/X.max())
 	y = data['tr_labels'][:, 0]
 	del data
+
 	return X, y
 
+def equalize_hist(train_img):
+    n_images, _ = train_img.shape
+    for i in xrange(n_images):
+        img = train_img[i]
+        train_img[i] = exposure.equalize_hist(img.reshape(32, 32)).ravel()
+    return train_img
+
 def CNN(X, y):
-	#l2 normalize 
+	#normalize 
 	preprocessing.normalize(X, 'max')
+	X = equalize_hist(X)
 	#scale centre to the mean to unit vector
 	#preprocessing.scale(X_train)
 	#preprocessing.scale(X_test)
-	X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=0.2, random_state = 42)
+	X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=0.2)
 	nn = Classifier(
     layers=[
-        Convolution("Rectifier", channels=4, kernel_shape=(5,5), dropout=0.25),
-        Layer("Tanh", units=10),
+        Convolution("Rectifier", channels=8, kernel_shape=(5,5), dropout=0.25),
+        Layer("Tanh", units=7),
         #Layer("Tanh", units=10),
-        Layer("Softmax")], learning_rate=0.02, n_iter=5)
+        Layer("Softmax")], learning_rate=0.1, n_iter=10)
 	nn.fit(X_train, y_train)
 	print('\nTRAIN SCORE', nn.score(X_train, y_train))
 	print('TEST SCORE', nn.score(X_test, y_test))
@@ -46,6 +56,9 @@ if __name__ == '__main__':
 	import matplotlib.pyplot as plt
 	from sklearn import preprocessing
 	from sklearn import datasets, cross_validation
+	from skimage import data
+	from skimage.util import img_as_float
+	from skimage import exposure
 	from sknn.mlp import Classifier, Convolution, Layer
 	# Use the GPU in 32-bit mode, falling back otherwise.
 	from sknn.platform import gpu32
