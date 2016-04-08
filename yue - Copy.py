@@ -4,56 +4,60 @@ TRAIN_TEST_SPLIT_RATIO = 0.2
 
 def loadData():
     data = sio.loadmat('./labeled_images.mat')
-    #test = sio.loadmat('./public_test_images.mat')
-    y_data = data['tr_labels'][:, 0];
-    X_data = data['tr_images'].T;
-    #print(test)
-    #(a_test, b_test, n_images_test) = test["public_test_images"].shape
+    test = sio.loadmat('./public_test_images.mat')
+    (a_data, b_data, n_images_data) = data["tr_images"].shape
+    print(test)
+    (a_test, b_test, n_images_test) = test["public_test_images"].shape
 
-    X_data = X_data.reshape((-1, 1024)).astype('float');
-    #X_test = np.reshape(np.swapaxes(test["public_test_images"], 0, 2), (n_images_test, a_test * b_test))
-    preprocessing.scale(X_data, axis=1)
-    #preprocessing.scale(X_test * 1.0, axis=1)
+    X_data = np.reshape(np.swapaxes(data["tr_images"], 0, 2), (n_images_data, a_data * b_data))
+    X_test = np.reshape(np.swapaxes(test["public_test_images"], 0, 2), (n_images_test, a_test * b_test))
+
+    preprocessing.scale(X_data * 1.0, axis=1)
+    preprocessing.scale(X_test * 1.0, axis=1)
     y_data = np.reshape(data["tr_labels"], (n_images_data, ))
-    return X_data, y_data
+    return X_data, y_data, X_test
 
 
-def SVM(X, y):
+def SVM(X_train, y_train, X_test):
 
-    X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=TRAIN_TEST_SPLIT_RATIO)
+# X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=TRAIN_TEST_SPLIT_RATIO)
 
 
-    X_train = np.asarray(X_train)
-    classifier = svm.SVC(kernel='precomputed')
-    kernel_train = np.dot(X_train, X_train.T)  # linear kernel
-    classifier.fit(kernel_train, y_train)
-    print("-----------")
+# X_train = np.asarray(X_train)
+# classifier = svm.SVC(kernel='precomputed')
+# kernel_train = np.dot(X_train, X_train.T)  # linear kernel
+# classifier.fit(kernel_train, y_train)
+# print("-----------")
 
-    #Testing
-    from sklearn.metrics import accuracy_score
-    from sklearn.metrics import confusion_matrix
-    kernel_test = np.dot(X_test, X_train.T)
-    y_pred = classifier.predict(kernel_test)
-    print("t_pred", y_pred)
-    print("t_test", y_test)
-    print accuracy_score(y_test, y_pred)
-    print("======",1,"========")
+# Testing
+# from sklearn.metrics import accuracy_score
+# from sklearn.metrics import confusion_matrix
+# kernel_test = np.dot(X_test, X_train.T)
+# y_pred = classifier.predict(kernel_test)
+# print("t_pred", y_pred)
+# print("t_test", y_test)
+# print accuracy_score(y_test, y_pred)
+# print("======",1,"========")
 
-    X_train_2 = X_train
-    X_train_3 = X_train
+
+# print('TRAIN SCORE', classifier.score(X_train, y_train))
+# print('TEST SCORE', classifier.score(X_test, y_test))
+# X_train_2 = X_train
+# y_train_2 = y_train
+# X_train_3 = X_train
+
+
     for image in range(len(X_train)):
         X_reverse = np.fliplr(X_train[image].reshape(32, 32)).ravel()
         X_train = np.append(X_train, [X_reverse], axis=0)
 
     y_train = np.append(y_train, y_train)
-    classifier = svm.SVC(kernel='poly', degree = 2)
+    classifier = svm.SVC(kernel='poly', degree = 3, C = 10)
     classifier.fit(X_train, y_train)
     # print("======",3,"========")
-    print('TRAIN SCORE', classifier.score(X_train, y_train))
-    print('TEST SCORE', classifier.score(X_test, y_test))
-
-
-   # return list(classifier.predict(X_test))
+    # print('TRAIN SCORE', classifier1.score(X_train, y_train))
+    # print('TEST SCORE', classifier1.score(X_test, y_test))
+    return list(classifier.predict(X_test))
 # classifier2 = svm.SVC(kernel='poly', degree = 2)
 # classifier2.fit(X_train, y_train)
 # print("======",2,"========")
@@ -91,18 +95,18 @@ def SVM(X, y):
 
 
 def main():
-    X, y = loadData()
-    SVM(X, y)
-    # print(len(X_test))
-    # with open('submit_normalized_poly1.csv', 'w') as f:
-    #     f.write('Id,Prediction\n')
-    #     index = 1
-    #     for pred in result:
-    #         f.write('%d,%d\n'%(index, pred))
-    #         index += 1
-    #     while index<=1253:
-    #         f.write('%d,0\n'%(index))
-    #         index+=1
+    X_data, y_data, X_test = loadData()
+    result = SVM(X_data, y_data, X_test)
+    print(len(X_test))
+    with open('submit_normalized_poly1.csv', 'w') as f:
+        f.write('Id,Prediction\n')
+        index = 1
+        for pred in result:
+            f.write('%d,%d\n'%(index, pred))
+            index += 1
+        while index<=1253:
+            f.write('%d,0\n'%(index))
+            index+=1
 
 if __name__ == '__main__':
     print "Import libaries..."
@@ -116,8 +120,6 @@ if __name__ == '__main__':
     from skimage.util import img_as_float
     from scipy import ndimage as ndi
     from skimage.filter import gabor_kernel
-    from sklearn.grid_search import GridSearchCV
-    from sklearn.svm import SVC
     logging.basicConfig()
     print("-------------------------")
     main()
