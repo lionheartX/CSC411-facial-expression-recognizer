@@ -1,0 +1,2 @@
+http://scikit-learn.org/stable/auto_examples/applications/face_recognition.html
+http://scikit-image.org/docs/dev/auto_examples/features_detection/plot_gabor.html?highlight=gabor%20filter
