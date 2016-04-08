@@ -58,9 +58,9 @@ def SVM(X, y):
     preprocessing.normalize(X, 'max')
     #preprocessing.robust_scale(X, axis=1, with_centering = True) #bad
     X = equalize_hist(X)
-
+    
     X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=TRAIN_TEST_SPLIT_RATIO)
-
+    
     n_components = 120
 
     print("Extracting the top %d eigenfaces from %d faces"
@@ -104,7 +104,7 @@ def SVM(X, y):
     print("====== PCA 130 ========")
     print('TRAIN SCORE', classifier13.score(X_train_pca, y_train))
     print('TEST SCORE', classifier13.score(X_test_pca, y_test))
-
+    
     n_components = 147
 
     print("Extracting the top %d eigenfaces from %d faces"
@@ -126,7 +126,7 @@ def SVM(X, y):
     print("====== PCA 147 ========")
     print('TRAIN SCORE', classifier13.score(X_train_pca, y_train))
     print('TEST SCORE', classifier13.score(X_test_pca, y_test))
-
+    '''
     n_components = 150
 
     print("Extracting the top %d eigenfaces from %d faces"
@@ -173,7 +173,7 @@ def SVM(X, y):
     print("====== PCA 160 ========")
     print('TRAIN SCORE', classifier13.score(X_train_pca, y_train))
     print('TEST SCORE', classifier13.score(X_test_pca, y_test))
-
+    '''
 
 
 def write_to_csv(result):

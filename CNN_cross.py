@@ -16,17 +16,17 @@ def loadData():
 
 def CNN(X, y):
 	#l2 normalize 
-	#preprocessing.normalize(X)
+	preprocessing.normalize(X, 'max')
 	#scale centre to the mean to unit vector
 	#preprocessing.scale(X_train)
 	#preprocessing.scale(X_test)
 	X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=0.2, random_state = 42)
 	nn = Classifier(
     layers=[
-        Convolution("Rectifier", channels=10, kernel_shape=(5,5), dropout=0.25),
+        Convolution("Rectifier", channels=4, kernel_shape=(5,5), dropout=0.25),
         Layer("Tanh", units=10),
-        Layer("Tanh", units=10),
-        Layer("Softmax")], learning_rate=0.02, n_iter=10)
+        #Layer("Tanh", units=10),
+        Layer("Softmax")], learning_rate=0.02, n_iter=5)
 	nn.fit(X_train, y_train)
 	print('\nTRAIN SCORE', nn.score(X_train, y_train))
 	print('TEST SCORE', nn.score(X_test, y_test))
