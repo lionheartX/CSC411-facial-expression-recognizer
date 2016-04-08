@@ -20,8 +20,8 @@ def loadData():
 	preprocessing.normalize(X_train)
 	preprocessing.normalize(X_test)
 	#scale centre to the mean to unit vector
-	preprocessing.scale(X_train)
-	preprocessing.scale(X_test)
+	#preprocessing.scale(X_train, =1)
+	#preprocessing.scale(X_test)
 	return X_train, y_train, X_test
 
 def CNN(X_train, y_train, X_test):
