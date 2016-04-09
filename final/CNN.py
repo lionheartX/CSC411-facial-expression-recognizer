@@ -38,10 +38,10 @@ def CNN(X_train, y_train, X_test, X_hidden):
 
 	nn = Classifier(
     layers=[
-        Convolution("Rectifier", channels=98, kernel_shape=(3,3), pool_shape = (2,2), pool_type="max"),
+        Convolution("Rectifier", channels=98, kernel_shape=(3,3)),
         #Convolution("Rectifier", channels=100, kernel_shape=(3,3), dropout=0.25, 
         	#weight_decay=0.0001, pool_shape = (2,2), pool_type="max"),
-        Layer("Softmax")], learning_rate=0.01, n_iter=50, random_state= 42)
+        Layer("Softmax")], learning_rate=0.01, n_iter=25, random_state= 42)
 	nn.fit(X_train, y_train)
 	print('\nTRAIN SCORE', nn.score(X_train, y_train))
 	pub_res = list(nn.predict(X_test))
@@ -49,11 +49,10 @@ def CNN(X_train, y_train, X_test, X_hidden):
 
 	return pub_res+hid_res
 
-
 def main():
 	X_data, y_data, X_test, X_hidden = loadData()
 	cnn_res_list = CNN(X_data, y_data, X_test, X_hidden)
-	with open('CNN.csv', 'w') as f:
+	with open('CNN_withoutPooling.csv', 'w') as f:
 		f.write('Id,Prediction\n')
 		index = 1
 		for pred in cnn_res_list:
