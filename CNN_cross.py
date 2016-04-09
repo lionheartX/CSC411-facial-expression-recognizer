@@ -23,8 +23,8 @@ def CNN(X, y):
 	X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=0.2, random_state = 42)
 	nn = Classifier(
     layers=[
-        Convolution("Rectifier", channels=4, kernel_shape=(5,5), dropout=0.25),
-        Layer("Tanh", units=10),
+        Convolution("Rectifier", channels=10, kernel_shape=(5,5), dropout=0.25),
+        Layer("Tanh", units=7),
         #Layer("Tanh", units=10),
         Layer("Softmax")], learning_rate=0.02, n_iter=5)
 	nn.fit(X_train, y_train)
